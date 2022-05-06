@@ -1,0 +1,101 @@
+{% extends 'partials/base.html' %}
+
+{% block title%}
+Home
+{%endblock%}
+{% load crispy_forms_tags %}
+{% block content%}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+<div class="container my-4">
+    <div class="row">
+        <div class="col-xl-8">
+            <div class="card shadow shadow-lg">
+                <div class="card-header bg-dark text-white">Statistics</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col xl-4">
+                        <div class="card xm shadow bg-dark text-white">
+                               <div class="card-body">
+                                
+                                <p><i class="bi bi-list-check text-primary"></i> Total Task</p>
+                                <h5 class="text-center">{{total_data}}</h5>
+                               </div>
+                        </div>
+                        </div>
+                        <div class="col xl-4">
+                            <div class="card xm shadow bg-dark text-white">
+                                   <div class="card-body">      
+                                        <p><i class="bi bi-check2-square text-success"></i> Completed Task</p>
+                                    <h5 class="text-center" >{{completed_data}}</h5>
+                                   </div>
+                            </div>
+                            </div>
+                        <div class="col xl-4">
+                            <div class="card xm shadow bg-dark text-white">
+                                   <div class="card-body">
+                                    
+                                    <p><i class="bi bi-x-octagon text-warning"></i> Uncompleted Task</p>
+                                    <h5 class="text-center">{{uncompleted_data}}</h5>
+                                   </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>    
+        </div>
+        <div class="col xl-4">
+          <div class="card shadow">
+            <div class="card-header bg-dark text-white">Task Form</div>
+            <div class="card-body">
+              <form class="d-grid" method="POST">
+                {% csrf_token %}
+                {{ form|crispy }} 
+                <input class="btn btn-success btn-sm mt-3 "  type="submit" value="Save">
+              </form>
+            </div> 
+
+          </div>
+        </div>
+</div>
+<!-- end Section -->
+
+<!-- Start Graph section -->
+<div class="container my-5">
+  <div class="row">
+    <div class="col">
+      <div class="card shadow">
+        <div class="card-header bg-dark text-white">Graph</div>
+        <div class="card-body">
+          <canvas id="myChart" ></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col ">
+      <div class="card-header bg-dark text-white">Task List</div>
+          <ul class="list-group ">
+            {% for task in data%}
+            <li class="list-group-item btn-end">
+              <small>{{ task.date}}</small>
+              <div class="row">
+                <div class="col-xl-8">
+                  {% if task.isComplete%}
+                  <p > {{ task.task}}      .C</p>
+                  {% else  %}
+                  <p >{{ task.task }}      .c</p>
+                {% endif %}
+                </div>
+                <div class="col-xl-4">
+                  <a href="{%url 'taskapp-edit' task.id %}" class="btn btn-info btn-sm " >Edit</a>
+                  <a href="{%url 'taskapp-delete' task.id %}" class="btn btn-danger btn-sm ">Delete</a>
+                </div>
+              </div>
+            </li>
+          {% endfor %}
+          </ul>
+  </div>
+</div>
+</div>
+<!-- end STATS section -->
+{% include 'partials/graph.html'%}
+    
+{% endblock%}
